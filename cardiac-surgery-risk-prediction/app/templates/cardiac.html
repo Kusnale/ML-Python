@@ -1,0 +1,233 @@
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cardiac surgery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="full-body">
+        <div class="container">
+            <h1 class="header text-white text-center text-decoration-underline">Data of the Patient after surgery
+            </h1>
+            <div class="row justify-content-center">
+                <h3 class="text-white">Enter the report data of the patient:</h3>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Name </label>
+                    <input type="text" class="form-control" id="txtName" placeholder="Enter Your Name">
+                </div>
+
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Age</label>
+                    <input type="text" class="form-control" id="txtAge" placeholder="Enter Your Age">
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Gender</label>
+                    <select class="form-control" id="selGender">
+                        <option value="">Select</option>
+                        <option value="1">Male</option>
+                        <option value="0">Female</option>
+                    </select>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Diabetes</label>
+                    <input type="text" class="form-control" id="selDiabetes" placeholder="Enter Your Diabetes">
+                    <span class="text-white"></span>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Hypertension</label>
+                    <input type="text" class="form-control" id="selHypertension" placeholder="Enter Your Hypertension">
+                    <span class="text-white"></span>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Chronic kidney disease</label>
+                    <input type="text" class="form-control" id="selKidneyDisease"
+                        placeholder="Enter Your Kidney Disease">
+                    <span class="text-white"></span>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Chronic obstructive pulmonary disease</label>
+                    <input type="text" class="form-control" id="selRespiratoryIssues"
+                        placeholder="Enter Your Kidney Disease">
+                    <span class="text-white"></span>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Ejection Fraction</label>
+                    <input type="text" class="form-control" id="selEjectionFraction"
+                        placeholder="Enter Your Ejection Fraction">
+                    <span class="text-white"></span>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Surgery Type CABG</label>
+                    <select class="form-control" id="selSurgeryTypeCABG">
+                        <option value="">Select</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Surgery Type Valve</label>
+                    <select class="form-control" id="selSurgeryTypeValve">
+                        <option value="">Select</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Surgery Type Congenita</label>
+                    <select class="form-control" id="selSurgeryTypeCongenita">
+                        <option value="">Select</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Surgery Type Aneurysm</label>
+                    <select class="form-control" id="selSurgeryTypeAneurysm">
+                        <option value="">Select</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label class="text-white fw-bold">Surgery Type Transplant</label>
+                    <select class="form-control" id="selSurgeryTypeTransplant">
+                        <option value="">Select</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="button">
+                    <button type="button" id="startPredicting" class="btn">Generate Report</button>
+                </div>
+                <div class="mt-5">
+                    <div class="alert alert-danger" id="messageBox1" role="alert">
+                        alert—check
+                    </div>
+                    <div class="alert alert-success" id="messageBox2" role="alert">
+                        alert—check
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+    $("#messageBox1").hide();
+    $("#messageBox2").hide();
+    $("#startPredicting").click(function () {
+
+        let age = parseInt($("#txtAge").val());
+
+        if (isNaN(age) || age < 1 || age > 110) {
+            alert("Please enter a valid age between 1 and 110.");
+            return false;
+        }
+
+        if ($("#selGender").val() === "") {
+            alert("Please Select gender");
+            return false;
+        }
+
+        let diabetesValue = parseInt($("#selDiabetes").val());
+
+        if (isNaN(diabetesValue) || diabetesValue < 70 || diabetesValue > 130) {
+            alert("Please enter a valid diabetes value between 99 and 130.");
+            return false;
+        }
+
+        let hypertensionValue = parseInt($("#selHypertension").val());
+
+        if (isNaN(hypertensionValue) || hypertensionValue < 90 || hypertensionValue > 180) {
+            alert("Please select a valid hypertension value between 90 and 180.");
+            return false;
+        }
+
+        let kidneyDiseaseValue = parseInt($("#selKidneyDisease").val());
+
+        if (isNaN(kidneyDiseaseValue) || kidneyDiseaseValue < 10 || kidneyDiseaseValue > 90) {
+            alert("Please select a valid kidney disease value between 10 and 90.");
+            return false;
+        }
+        let respiratoryIssuesValue = parseInt($("#selRespiratoryIssues").val());
+
+        if (isNaN(respiratoryIssuesValue) || respiratoryIssuesValue < 1 || respiratoryIssuesValue > 100) {
+            alert("Please select a valid respiratory issues value between 1 and 100.");
+            return false;
+        }
+
+        let ejectionFractionValue = parseInt($("#selEjectionFraction").val());
+
+        if (isNaN(ejectionFractionValue) || ejectionFractionValue < 30 || ejectionFractionValue > 70) {
+            alert("Please select a valid ejection fraction value between 30 and 70.");
+            return false;
+        }
+
+        if ($("#selSurgeryTypeCABG").val() === "") {
+            alert("Please Select surgerytypecabg");
+            return false;
+        }
+
+        if ($("#selSurgeryTypeValve").val() === "") {
+            alert("Please Select surgerytypevalve");
+            return false;
+        }
+
+        if ($("#selSurgeryTypeCongenita").val() === "") {
+            alert("Please Select surgerytypecongenita");
+            return false;
+        }
+
+        if ($("#selSurgeryTypeAneurysm").val() === "") {
+            alert("Please Select surgerytypeaneurysm");
+            return false;
+        }
+
+        if ($("#selSurgeryTypeTransplant").val() === "") {
+            alert("Please Select surgerytypetransplant");
+            return false;
+        }
+
+        $("#messageBox1").show();
+        $("#messageBox1").html('Predicting Result, Please Wait <div class="spinner-border text-warning" role="status"><span class= "visually-hidden" > Loading...</span ></div >');
+        startPredicting();
+    });
+
+    let query = "";
+
+    function startPredicting() {
+        let formData = new FormData();
+        formData.append("csrfmiddlewaretoken", $('input[name=csrfmiddlewaretoken]').val());
+
+        formData.append("txtName", $("#txtName").val());
+        formData.append("txtAge", $("#txtAge").val());
+        formData.append("selGender", $("#selGender").val());
+        formData.append("selDiabetes", $("#selDiabetes").val());
+        formData.append("selHypertension", $("#selHypertension").val());
+        formData.append("selKidneyDisease", $("#selKidneyDisease").val());
+        formData.append("selRespiratoryIssues", $("#selRespiratoryIssues").val());
+        formData.append("selEjectionFraction", $("#selEjectionFraction").val());
+        formData.append("selSurgeryTypeCABG", $("#selSurgeryTypeCABG").val());
+        formData.append("selSurgeryTypeValve", $("#selSurgeryTypeValve").val());
+        formData.append("selSurgeryTypeCongenita", $("#selSurgeryTypeCongenita").val());
+        formData.append("selSurgeryTypeAneurysm", $("#selSurgeryTypeAneurysm").val());
+        formData.append("selSurgeryTypeTransplant", $("#selSurgeryTypeTransplant").val());
+
+        let formDataJSON = {};
+        for (let [key, value] of formData.entries()) {
+            formDataJSON[key] = value;
+        }
+
+        // Store formDataJSON in local storage
+        localStorage.setItem("formData", JSON.stringify(formDataJSON));
+        window.location = "/cardiac_report/";
+    }
+</script>

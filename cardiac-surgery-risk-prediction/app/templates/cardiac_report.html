@@ -1,0 +1,222 @@
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cardiac surgery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="full-body">
+        <div class="container">
+            <h1 class="header text-white text-center text-decoration-underline">
+            </h1>
+            <div class="row justify-content-center">
+                <h2 class="text-white text-center text-decoration-underline">The Consolidated Report of the Patient 
+
+                </h2>
+                <table class="table w-50">
+                    <tr class="text-white">
+                        <th>Name</th>
+                        <td id="name"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Age</th>
+                        <td id="age"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Gender</th>
+                        <td id="gender"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Diabetes</th>
+                        <td id="diabetes"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Hypertension</th>
+                        <td id="hypertension"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Kidney Disease</th>
+                        <td id="KidneyDisease"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Respiratory Issues</th>
+                        <td id="RespiratoryIssues"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Ejection Fraction</th>
+                        <td id="EjectionFraction"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Surgery Type CABG</th>
+                        <td id="CABG"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Surgery Type Valve</th>
+                        <td id="valve"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Surgery Type Congenita</th>
+                        <td id="congenita"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Surgery Type Aneurysm</th>
+                        <td id="aneurysm"></td>
+                    </tr>
+
+                    <tr class="text-white">
+                        <th>Surgery Type Transplant</th>
+                        <td id="transplant"></td>
+                    </tr>
+
+                </table>
+                <div class="button">
+                    <button type="button" id="startPredicting" class="btn">Submit</button>
+                </div>
+                <div class="mt-5">
+                    <div class="alert alert-danger" id="messageBox1" role="alert">
+                        alert—check
+                    </div>
+                    <div class="alert alert-success" id="messageBox2" role="alert">
+                        alert—check
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+    $("#messageBox1").hide();
+    $("#messageBox2").hide();
+    $("#startPredicting").click(function () {
+        startPredicting();
+    });
+
+    let query = "";
+
+    function startPredicting() {
+        let formData = new FormData();
+        formData.append("csrfmiddlewaretoken", $('input[name=csrfmiddlewaretoken]').val());
+
+        formData.append("txtAge", $("#txtAge").val());
+        formData.append("selGender", $("#selGender").val());
+        formData.append("selDiabetes", $("#selDiabetes").val());
+        formData.append("selHypertension", $("#selHypertension").val());
+        formData.append("selKidneyDisease", $("#selKidneyDisease").val());
+        formData.append("selRespiratoryIssues", $("#selRespiratoryIssues").val());
+        formData.append("selEjectionFraction", $("#selEjectionFraction").val());
+        formData.append("selSurgeryTypeCABG", $("#selSurgeryTypeCABG").val());
+        formData.append("selSurgeryTypeValve", $("#selSurgeryTypeValve").val());
+        formData.append("selSurgeryTypeCongenita", $("#selSurgeryTypeCongenita").val());
+        formData.append("selSurgeryTypeAneurysm", $("#selSurgeryTypeAneurysm").val());
+        formData.append("selSurgeryTypeTransplant", $("#selSurgeryTypeTransplant").val());
+        window.location = "/prediction/";
+
+    }
+
+    let storedFormData = localStorage.getItem("formData");
+
+    // Check if there is any stored data
+    if (storedFormData) {
+        // Parse the stored data back to an object
+        let formDataJSON = JSON.parse(storedFormData);
+
+        // Now you can access the individual form values from formDataJSON object
+        let txtNameValue = formDataJSON["txtName"];
+        let txtAgeValue = formDataJSON["txtAge"];
+        let selGenderValue = formDataJSON["selGender"];
+        let selDiabetesValue = formDataJSON["selDiabetes"];
+        let selHypertensionValue = formDataJSON["selHypertension"];
+        let selKidneyDiseaseValue = formDataJSON["selKidneyDisease"];
+        let selRespiratoryIssuesValue = formDataJSON["selRespiratoryIssues"];
+        let selEjectionFractionValue = formDataJSON["selEjectionFraction"];
+        let selSurgeryTypeCABGValue = formDataJSON["selSurgeryTypeCABG"];
+        let selSurgeryTypeValveValue = formDataJSON["selSurgeryTypeValve"];
+        let selSurgeryTypeCongenitaValue = formDataJSON["selSurgeryTypeCongenita"];
+        let selSurgeryTypeAneurysmValue = formDataJSON["selSurgeryTypeAneurysm"];
+        let selSurgeryTypeTransplantValue = formDataJSON["selSurgeryTypeTransplant"];
+
+        $("#name").text(txtNameValue);
+        $("#age").text(txtAgeValue);
+        $("#gender").text(selGenderValue === "1" ? "Male" : "Female");
+        if (selDiabetesValue >= 99 && selDiabetesValue <= 125) {
+            selDiabetesValue = "Moderate";
+        } else if (selDiabetesValue > 125) {
+            selDiabetesValue = "High";
+        } else {
+            selDiabetesValue = "Normal";
+        }
+
+        $("#diabetes").text(selDiabetesValue);
+
+        if (selHypertensionValue >= 90 && selHypertensionValue <= 120) {
+            selHypertensionValue = "Normal";
+        } else if (selHypertensionValue >= 120 && selHypertensionValue <= 129) {
+            selHypertensionValue = "Moderate";
+        } else {
+            selHypertensionValue = "High";
+        }
+
+        $("#hypertension").text(selHypertensionValue);
+
+        if (selKidneyDiseaseValue >= 90 && selKidneyDiseaseValue <= 100) {
+            selKidneyDiseaseValue = "Normal";
+        } else if (selKidneyDiseaseValue >= 50 && selKidneyDiseaseValue <= 89) {
+            selKidneyDiseaseValue = "Moderate";
+        } else {
+            selKidneyDiseaseValue = "High";
+        }
+
+        $("#KidneyDisease").text(selKidneyDiseaseValue);
+
+        if (selRespiratoryIssuesValue >= 80 && selRespiratoryIssuesValue <= 100) {
+            selRespiratoryIssuesValue = "Normal";
+        } else if (selRespiratoryIssuesValue >= 50 && selRespiratoryIssuesValue <= 79) {
+            selRespiratoryIssuesValue = "Moderate";
+        } else {
+            selRespiratoryIssuesValue = "High";
+        }
+
+        // Update the HTML element with the respiratory issues value
+        $("#RespiratoryIssues").text(selRespiratoryIssuesValue);
+
+        if (selEjectionFractionValue >= 50 && selEjectionFractionValue <= 70) {
+            selEjectionFractionValue = "Normal";
+        } else if (selEjectionFractionValue >= 40 && selEjectionFractionValue <= 49) {
+            selEjectionFractionValue = "Moderate";
+        } else {
+            selEjectionFractionValue = "High";
+        }
+
+        // Update the HTML element with the ejection fraction value
+        $("#EjectionFraction").text(selEjectionFractionValue);
+
+        $("#CABG").text(selSurgeryTypeCABGValue === "1" ? "Yes" : "No");
+        $("#valve").text(selSurgeryTypeValveValue === "1" ? "Yes" : "No");
+        $("#congenita").text(selSurgeryTypeCongenitaValue === "1" ? "Yes" : "No");
+        $("#aneurysm").text(selSurgeryTypeAneurysmValue === "1" ? "Yes" : "No");
+        $("#transplant").text(selSurgeryTypeTransplantValue === "1" ? "Yes" : "No");
+
+    } else {
+        console.log("No stored form data found.");
+    }
+</script>

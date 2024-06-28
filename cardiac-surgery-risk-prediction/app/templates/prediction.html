@@ -1,0 +1,131 @@
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cardiac surgery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa; /* Light gray background */
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .result-container {
+            background-color: #fff; /* White background */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        #res {
+            font-size: 36px;
+            font-weight: bold;
+            color: white; /* Blue color */
+        }
+        #messageBox1 {
+            margin-top: 20px;
+            font-size: 20px;
+            text-align: justify;
+        }
+        .alert {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .normal {
+            background-color: #28a745; /* Green color */
+            color: #fff; /* White text color */
+        }
+        .moderate {
+            background-color: #ffc107; /* Yellow color */
+            color: #000; /* Black text color */
+        }
+        .high {
+            background-color: #dc3545; /* Red color */
+            color: #fff; /* White text color */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="full-body">
+        <div class="container">
+            <h1 class="header text-white text-center text-decoration-underline">
+            </h1>
+            <div class="row justify-content-center">
+                <h3 class="text-white text-center">The Predicted Results of the Patient following Cardiac Surgery is <span
+                        id="res"></span></h3>
+
+                <div class="mt-5">
+                    <div class="alert alert-success text-center" id="messageBox1" role="alert">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+
+    let query = "";
+
+    function startPredicting() {
+        let formData = new FormData();
+        formData.append("csrfmiddlewaretoken", $('input[name=csrfmiddlewaretoken]').val());
+        let storedFormData = localStorage.getItem("formData");
+        let formDataJSON = JSON.parse(storedFormData);
+        formData.append("txtAge", formDataJSON["txtAge"]);
+        formData.append("selGender", formDataJSON["selGender"]);
+        formData.append("selDiabetes", formDataJSON["selDiabetes"]);
+        formData.append("selHypertension", formDataJSON["selHypertension"]);
+        formData.append("selKidneyDisease", formDataJSON["selKidneyDisease"]);
+        formData.append("selRespiratoryIssues", formDataJSON["selRespiratoryIssues"]);
+        formData.append("selEjectionFraction", formDataJSON["selEjectionFraction"]);
+        formData.append("selSurgeryTypeCABG", formDataJSON["selSurgeryTypeCABG"]);
+        formData.append("selSurgeryTypeValve", formDataJSON["selSurgeryTypeValve"]);
+        formData.append("selSurgeryTypeCongenita", formDataJSON["selSurgeryTypeCongenita"]);
+        formData.append("selSurgeryTypeAneurysm", formDataJSON["selSurgeryTypeAneurysm"]);
+        formData.append("selSurgeryTypeTransplant", formDataJSON["selSurgeryTypeAneurysm"]);
+
+
+        $.ajax({
+            beforeSend: function () {
+            },
+            url: "/start_predict/",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                $("#res").text(parseInt(res) + "%");
+                if (res < 30) {
+                    $("#messageBox1").text("Status of Patient :Normal");
+                } else if (res >= 30 && res <= 60) {
+                    $("#messageBox1").html("Status of Patient : Moderate <br><br> May need Medical consultation");
+                } else if (res > 60 && res <= 100) {
+                    $("#messageBox1").html("Status of Patient : High <br><br> Must need Medical consultation");
+                }
+            },
+            error: function (res, error) {
+                console.error(error);
+            },
+
+        });
+
+    }
+
+    startPredicting();
+</script>
